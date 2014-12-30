@@ -2,10 +2,10 @@
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Guzzle\Http\Client;
+use GuzzleHttp\Client;
 use Runscope\Plugin\RunscopePlugin;
 
-$client = new Client('https://api.github.com');
+$client = new Client();
 $runscopePlugin = new RunscopePlugin('bucket_key');
 // authenticated bucket
 // $runscopePlugin = new RunscopePlugin('bucket_key', 'auth_token');
@@ -13,10 +13,9 @@ $runscopePlugin = new RunscopePlugin('bucket_key');
 // service region
 // $runscopePlugin = new RunscopePlugin('bucket_key', null, 'eu1.runscope.net');
 
-$client->addSubscriber($runscopePlugin);
+$client->getEmitter()->attach($runscopePlugin);
 
 // Send the request and get the response
-$request = $client->get('/');
-$response = $request->send();
+$response = $client->get('https://api.github.com/');
 echo $response->getBody();
 echo $response->getHeader('Content-Length');

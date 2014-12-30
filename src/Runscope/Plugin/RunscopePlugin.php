@@ -2,46 +2,40 @@
 
 namespace Runscope\Plugin;
 
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Guzzle\Common\Event;
+use GuzzleHttp\Event\SubscriberInterface;
+use GuzzleHttp\Event\BeforeEvent;
 
 /**
  * Plugin class that will transform all requests to go through Runscope.
  *
  * @author Runscope <help@runscope.com>
  */
-class RunscopePlugin implements EventSubscriberInterface
+class RunscopePlugin implements SubscriberInterface
 {
     protected $bucketKey;
     protected $authToken;
     protected $gatewayHost;
 
-    public function __construct(
-        $bucketKey,
-        $authToken = null,
-        $gatewayHost = 'runscope.net'
-    ) {
+    public function __construct($bucketKey, $authToken = null, $gatewayHost = 'runscope.net')
+    {
         $this->bucketKey = $bucketKey;
         $this->authToken = $authToken;
         $this->gatewayHost = $gatewayHost;
     }
 
-    public static function getSubscribedEvents()
+    public function getEvents()
     {
-        return array(
-            'request.before_send' => array('onBeforeSend', 255),
-        );
+        return ['before' => ['onBeforeSend', 255]];
     }
 
     /**
      * Event triggered right before sending a request
      *
-     * @param Event $event
+     * @param BeforeEvent $event
      */
-    public function onBeforeSend(Event $event)
+    public function onBeforeSend(BeforeEvent $event)
     {
-        /** @var \Guzzle\Http\Message\Request $request */
-        $request = $event['request'];
+        $request = $event->getRequest();
 
         list($newUrl, $port) = $this->proxify(
             $request->getUrl(),

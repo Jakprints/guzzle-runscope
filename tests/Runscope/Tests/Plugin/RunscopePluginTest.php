@@ -2,22 +2,24 @@
 
 namespace Runscope\Tests\Plugin;
 
-use Guzzle\Http\Message\Request;
-use Guzzle\Common\Event;
+use GuzzleHttp\Transaction;
+use GuzzleHttp\Client;
+use GuzzleHttp\Message\Request;
+use GuzzleHttp\Event\BeforeEvent;
 use Guzzle\Tests\GuzzleTestCase;
 use Runscope\Plugin\RunscopePlugin;
 
 /**
  * @covers Runscope\Plugin\RunscopePlugin
  */
-class RunscopePluginTest extends GuzzleTestCase
+class RunscopePluginTest extends \PHPUnit_Framework_TestCase
 {
     /** @test */
-    public function it_supports_on_before_send_event()
+    public function testOnBeforeSend()
     {
         $plugin = new RunscopePlugin('bucketKeyHere');
-        $this->assertNotEmpty($plugin->getSubscribedEvents());
-        $event = new Event(array('request' => new Request('GET', 'https://api.github.com')));
+        $this->assertNotEmpty($plugin->getEvents());
+        $event = new BeforeEvent(new Transaction(new Client(), new Request('GET', 'https://api.github.com')));
         $plugin->onBeforeSend($event);
     }
 }

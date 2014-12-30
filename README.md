@@ -1,4 +1,4 @@
-[Guzzle](http://guzzlephp.org) plugin for Runscope 
+[Guzzle](http://guzzlephp.org) plugin for Runscope
 
 - Requires a free Runscope account, [sign up here](https://www.runscope.com/signup)
 - Automatically create Runscope URLs for your requests
@@ -8,7 +8,7 @@
 Install by issuing:
 
 ```cli
-    ~ composer require runscope/guzzle-plugin
+    ~ composer require mike27cubes/runscope-guzzle-plugin
 ```
 
 Usage is as follows:
@@ -17,10 +17,10 @@ Usage is as follows:
 <?php
 require __DIR__ . '/../vendor/autoload.php';
 
-use Guzzle\Http\Client;
+use GuzzleHttp\Client;
 use Runscope\Plugin\RunscopePlugin;
 
-$client = new Client('https://api.github.com');
+$client = new Client();
 
 $runscopePlugin = new RunscopePlugin('bucket_key');
 
@@ -30,10 +30,10 @@ $runscopePlugin = new RunscopePlugin('bucket_key');
 // service region
 // $runscopePlugin = new RunscopePlugin('bucket_key', null, 'eu1.runscope.net');
 
-$client->addSubscriber($runscopePlugin);
+$client->getEmitter()->attach($runscopePlugin);
 
 // Send the request and get the response
-$response = $client->get('/')->send();
+$response = $client->get('https://api.github.com/');
 ```
 
 Enjoy!

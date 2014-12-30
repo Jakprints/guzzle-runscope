@@ -1,7 +1,7 @@
 {
-    "name": "runscope/guzzle-plugin",
-    "description": "This package adds Runscope support to the Guzzle PHP library.",
-    "homepage": "https://github.com/runscope/guzzle-runscope",
+    "name": "mike27cubes/runscope-guzzle-plugin",
+    "description": "This package adds Runscope support to the Guzzle 5.x PHP library.",
+    "homepage": "https://github.com/mike27cubes/guzzle-runscope",
     "license": "MIT",
     "authors": [
         {
@@ -12,18 +12,23 @@
         {
             "name": "Luis Cordova",
             "homepage": "http://craftitonline.com"
+        },
+        {
+            "name": "Mike Hickey",
+            "homepage": "http://www.27cubes.com"
         }
     ],
     "keywords": ["runscope", "guzzle"],
     "require": {
-        "php": ">=5.3.0",
+        "php": ">=5.4.0",
         "psr/log": "1.0.0",
-        "guzzle/guzzle": ">=v3.0"
+        "guzzlehttp/guzzle": "~5.0"
     },
     "require-dev": {
         "phpspec/phpspec": "2.0.*@dev",
         "monolog/monolog": "1.6.*",
-        "raulfraile/ladybug": "~1.0"
+        "raulfraile/ladybug": "~1.0",
+        "phpunit/phpunit": "4.4.*"
     },
     "minimum-stability": "dev",
     "config": {
