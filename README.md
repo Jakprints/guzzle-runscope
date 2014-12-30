@@ -1,4 +1,4 @@
-[Guzzle](http://guzzlephp.org) plugin for Runscope
+[Guzzle 5.x](http://guzzlephp.org) plugin for Runscope
 
 - Requires a free Runscope account, [sign up here](https://www.runscope.com/signup)
 - Automatically create Runscope URLs for your requests
