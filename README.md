@@ -1,4 +1,4 @@
-[Guzzle 5.x](http://guzzlephp.org) plugin for Runscope
+[Guzzle 6.x](http://guzzlephp.org) middleware for Runscope
 
 - Requires a free Runscope account, [sign up here](https://www.runscope.com/signup)
 - Automatically create Runscope URLs for your requests
@@ -8,7 +8,7 @@
 Install by issuing:
 
 ```cli
-    ~ composer require mike27cubes/runscope-guzzle-plugin
+    ~ composer require jakprints/runscope-guzzle-middleware
 ```
 
 Usage is as follows:
@@ -18,19 +18,22 @@ Usage is as follows:
 require __DIR__ . '/../vendor/autoload.php';
 
 use GuzzleHttp\Client;
-use Runscope\Plugin\RunscopePlugin;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Middleware;
+use Runscope\Middleware\RunscopeMiddleware;
 
-$client = new Client();
-
-$runscopePlugin = new RunscopePlugin('bucket_key');
+$runscopeMiddleware = new RunscopeMiddleware('bucket_key');
 
 // authenticated bucket
-// $runscopePlugin = new RunscopePlugin('bucket_key', 'authTokenHere');
+// $runscopeMiddleware = new RunscopeMiddleware('bucket_key', 'authTokenHere');
 
 // service region
-// $runscopePlugin = new RunscopePlugin('bucket_key', null, 'eu1.runscope.net');
+// $runscopeMiddleware = new RunscopeMiddleware('bucket_key', null, 'eu1.runscope.net');
 
-$client->getEmitter()->attach($runscopePlugin);
+$stack = HandlerStack::create();
+$stack->push(Middleware::mapRequest($runscopeMiddleware));
+
+$client = new Client(['handler' => $stack]);
 
 // Send the request and get the response
 $response = $client->get('https://api.github.com/');
