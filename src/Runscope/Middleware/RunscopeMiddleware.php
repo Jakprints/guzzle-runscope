@@ -1,17 +1,12 @@
 <?php
 
-namespace Runscope\Plugin;
+namespace Runscope\Middleware;
 
-use GuzzleHttp\Event\SubscriberInterface;
-use GuzzleHttp\Event\BeforeEvent;
+use Psr\Http\Message\RequestInterface;
 
-/**
- * Plugin class that will transform all requests to go through Runscope.
- *
- * @author Runscope <help@runscope.com>
- */
-class RunscopePlugin implements SubscriberInterface
+class RunscopeMiddleware
 {
+
     protected $bucketKey;
     protected $authToken;
     protected $gatewayHost;
@@ -23,35 +18,27 @@ class RunscopePlugin implements SubscriberInterface
         $this->gatewayHost = $gatewayHost;
     }
 
-    public function getEvents()
+    public function __invoke(callable $handler)
     {
-        return ['before' => ['onBeforeSend', 255]];
-    }
+        return function (RequestInterface $request, array $options) use ($handler){
+            list($newUrl, $port) = $this->proxify(
+                $request->getUrl(),
+                $this->bucketKey,
+                $this->gatewayHost
+            );
 
-    /**
-     * Event triggered right before sending a request
-     *
-     * @param BeforeEvent $event
-     */
-    public function onBeforeSend(BeforeEvent $event)
-    {
-        $request = $event->getRequest();
+            $request->withUri($newUrl);
 
-        list($newUrl, $port) = $this->proxify(
-            $request->getUrl(),
-            $this->bucketKey,
-            $this->gatewayHost
-        );
+            if ($port){
+                $request->withHeader('Runscope-Request-Port', $port);
+            }
 
-        $request->setUrl($newUrl);
+            if ($this->authToken){
+                $request->withHeader('Runscope-Bucket-Auth', $this->authToken);
+            }
 
-        if ($port) {
-            $request->setHeader('Runscope-Request-Port', $port);
-        }
-
-        if ($this->authToken) {
-            $request->setHeader('Runscope-Bucket-Auth', $this->authToken);
-        }
+            return $handler($reqeust, $options);
+        };
     }
 
     private function proxify($originalUrl, $bucketKey, $gatewayHost)

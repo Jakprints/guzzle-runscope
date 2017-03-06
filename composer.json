@@ -1,6 +1,6 @@
 {
-    "name": "mike27cubes/runscope-guzzle-plugin",
-    "description": "This package adds Runscope support to the Guzzle 5.x PHP library.",
+    "name": "jakprints/runscope-guzzle-middleware",
+    "description": "This package adds Runscope support to the Guzzle 6.x PHP library.",
     "homepage": "https://github.com/mike27cubes/guzzle-runscope",
     "license": "MIT",
     "authors": [
@@ -16,13 +16,17 @@
         {
             "name": "Mike Hickey",
             "homepage": "http://www.27cubes.com"
+        },
+        {
+            "name": "Tim Shoda",
+            "homepage": "https://www.jakprints.com"
         }
     ],
     "keywords": ["runscope", "guzzle"],
     "require": {
         "php": ">=5.4.0",
         "psr/log": "1.0.0",
-        "guzzlehttp/guzzle": "~5.0"
+        "psr/http-message": "~1.0"
     },
     "require-dev": {
         "phpspec/phpspec": "2.0.*@dev",
