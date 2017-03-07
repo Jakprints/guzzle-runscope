@@ -3,6 +3,7 @@
 namespace Runscope\Middleware;
 
 use Psr\Http\Message\RequestInterface;
+use GuzzleHttp\Psr7\Uri;
 
 class RunscopeMiddleware
 {
@@ -18,16 +19,14 @@ class RunscopeMiddleware
         $this->gatewayHost = $gatewayHost;
     }
 
-    public function __invoke(callable $handler)
-    {
-        return function (RequestInterface $request, array $options) use ($handler){
+    public function __invoke(RequestInterface $request){
             list($newUrl, $port) = $this->proxify(
-                $request->getUrl(),
+                $request->getUri(),
                 $this->bucketKey,
                 $this->gatewayHost
             );
 
-            $request->withUri($newUrl);
+            $request->withUri(new Uri($newUrl));
 
             if ($port){
                 $request->withHeader('Runscope-Request-Port', $port);
@@ -37,8 +36,8 @@ class RunscopeMiddleware
                 $request->withHeader('Runscope-Bucket-Auth', $this->authToken);
             }
 
-            return $handler($reqeust, $options);
-        };
+            return $request;
+
     }
 
     private function proxify($originalUrl, $bucketKey, $gatewayHost)
